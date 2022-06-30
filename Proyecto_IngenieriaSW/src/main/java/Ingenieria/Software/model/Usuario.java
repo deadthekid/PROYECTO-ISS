@@ -36,6 +36,8 @@ public class Usuario {
 	@JsonBackReference
 	private Departamento departamento;
 	
+	
+	
 	//Constructor por defecto 
 	
 	public Usuario() {}
