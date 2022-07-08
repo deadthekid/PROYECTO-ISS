@@ -59,10 +59,10 @@
                 <input type="email" class="form-control btn-secondary bg-light text-secondary" id="correoElectronico" name="correoElectronico" placeholder="Correo electrónico" required="required">
             </div>
             <div class="form-group">
-                <input type="password" class="form-control btn-secondary bg-light text-secondary" id="contrasenia" name="contrasenia" placeholder="contraseña" required="required">
+                <input type="password" class="form-control btn-secondary bg-light text-secondary" id="contrasenia" name="contrasenia" placeholder="contraseña" required="required"  maxlength="15">
             </div>
             <div class="form-group">
-                <input type="password" class="form-control btn-secondary bg-light text-secondary" id="confirmacionContrasenia" name="up2" placeholder="confirmación de contraseña" required="required">
+                <input type="password" class="form-control btn-secondary bg-light text-secondary" id="confirmacionContrasenia" name="up2" placeholder="confirmación de contraseña" required="required" maxlength="15">
             </div>
             <div class="form-group text-secondary">
                   <select class="form-select form-control btn-secondary bg-light text-secondary " id="idDepartamento" name="idDepartamento"  required>
@@ -98,6 +98,14 @@
             <div class="form-group">
                 <input type="text" class="form-control btn-secondary bg-light text-secondary" id="direccion" name="direccion" placeholder="Direccion" required="required">
             </div>
+            <div class="form-group text-secondary">
+               <select class="form-select form-control" multiple id="suscripcion" name="suscripcion">
+				  <option value="Electronica">Electronica</option>
+				  <option value="Padres">Padres</option>
+				  <option value="Hogar">Hogar</option>
+				</select>
+            </div>
+            
             
             <div class="form-group">
                 <label class="form-check-label">

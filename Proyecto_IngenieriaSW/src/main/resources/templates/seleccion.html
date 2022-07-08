@@ -1,5 +1,4 @@
 <!doctype html>
-<html xmlns:th = "http//www.thymeleaf.org">
 <html lang="en">
   <head>
     <!-- Required meta tags -->
@@ -30,25 +29,36 @@
 </header>
 
     <div class="signup-form text-center">
-        <form th:action="@{/login}" method="post" id="loginForm"  oninput='up2.setCustomValidity(up2.value != contrasenia.value ? "Las contraseñas no coinciden" : "")' style="height: 483px !important; width: 389px; ">
+        <form th:action="@{/categorias/seleccionarCategoria}" method="post" oninput='up2.setCustomValidity(up2.value != contrasenia.value ? "Las contraseñas no coinciden" : "")'>
             <div class="text-center">
                 <img id="imagen" class="rounded" src="/images/logo-group.svg">
             </div>
-            <h2 class="text-warning" style="color:#E9B200 ;">Iniciar</h2>
-            <p class="hint-text">Ingresa tus datos para autenticarte</p>
+            <h2 class="text-warning" style="color:#E9B200 ;">Registrarse</h2>
+            <p class="hint-text">Crea tu cuenta y explora el mundo de vender y comprar</p>
+           
+            
             <div class="form-group">
-                <input type="email" class="form-control btn-secondary bg-light text-secondary" id="username" name="username" placeholder="Nombre" required="required">
+                <input type="email" class="form-control btn-secondary bg-light text-secondary" id="correoElectronico" name="correoElectronico" placeholder="Correo electrónico" required="required">
             </div>
-            <div class="form-group">
-                <input type="password" class="form-control btn-secondary bg-light text-secondary" id="password" name="password" placeholder="Contraseña" required="required">
+            
+           
+            
+            
+            <div class="form-group text-secondary">
+               <select class="form-select form-control" multiple id="suscripcion" name="suscripcion">
+				  <option value="Electronica">Electronica</option>
+				  <option value="Padres">Padres</option>
+				  <option value="Hogar">Hogar</option>
+				  <option value="">Ninguna</option>
+				</select>
             </div>
+            
+            
+            
             <div class="form-group">
-                <button type="submit" class="btn bg-warning btn-lg btn-block" style="background-color:#E9B200">Iniciar</button>
+                <button type="submit" class="btn bg-warning btn-lg btn-block" style="background-color:#E9B200">Regístrate ahora</button>
             </div>
         </form>
-        <label class="form-check-label">
-                    <a href="/encriptar" class="text-warning">Terminos y condiciones</a> 
-                </label>
         
     </div>
 

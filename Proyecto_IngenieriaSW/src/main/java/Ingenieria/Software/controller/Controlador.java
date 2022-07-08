@@ -13,6 +13,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -45,10 +47,37 @@ public class Controlador {
 	ServiceProducto serviceProducto;
 	
 	
+	//============================================================================================
+	//Seguridad
+	//============================================================================================
+	@Autowired
+	PasswordEncoder passwordEncoder;
+	@RequestMapping(value="/encriptar"  ,method=RequestMethod.GET)
+	public String encriptarContrasenia(){
+		List<Usuario> lista = this.serviceUsuario.obtenerTodosUsuarios();
+		String contrasenia;
+		for (Usuario e: lista) {
+			if(e.getContrasenia().length()<16) {
+			contrasenia = passwordEncoder.encode(e.getContrasenia());
+			System.out.print("heber"+"pasa a"+contrasenia);
+			e.setContrasenia(contrasenia);
+			this.serviceUsuario.crear(e);
+			}
+			
+		}
+		return"encriptar";
+	}
+	
+	
+	
 	/***************************************************************USUARIO**********************************************************************/
-	@GetMapping("/")
+	@GetMapping("/inicio")
 	public String registrarCompania(){
 		return "index";
+	}
+	@GetMapping("/")
+	public String registrarCompani(){
+		return "inicio";
 	}
 	
 	
@@ -62,6 +91,20 @@ public class Controlador {
 		return "login";
 	}
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//============================================================================================
+	//Usuarios
+	//============================================================================================
+	
 	@RequestMapping(value= "/usuarios/iniciarSesion",method=RequestMethod.POST)
 	public String crearUsuario(
 								  @RequestParam(name = "primerNombre") String primerNombre,
@@ -72,11 +115,12 @@ public class Controlador {
 								  @RequestParam(name = "contrasenia") String contrasenia,
 								  @RequestParam(name = "idDepartamento") int idDepartamento,
 								  @RequestParam(name = "telefono") int telefono,
-								  @RequestParam(name = "direccion") String direccion){
+								  @RequestParam(name = "direccion") String direccion,
+								  @RequestParam(name = "suscripcion") String suscripcion){
 		/*int id, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
 			String correoElectronico, String direccion, String rol, int idDepartamento*/
 		try {
-			Usuario usuario= new Usuario(primerNombre,segundoNombre,primerApellido,segundoApellido,correoElectronico,contrasenia,idDepartamento,telefono,direccion);
+			Usuario usuario= new Usuario(primerNombre,segundoNombre,primerApellido,segundoApellido,correoElectronico,contrasenia,idDepartamento,telefono,direccion,suscripcion);
 			this.serviceUsuario.crear(usuario);
 			return "login";
 		}catch(Exception e) {
@@ -92,6 +136,8 @@ public class Controlador {
     public String registrarProductos(){
         return "test2";
     }
+	
+	
 	
 	@GetMapping("/productos/busqueda")
     public String busquedaProductos(){
@@ -155,7 +201,7 @@ public class Controlador {
 
     }
 /******USARRRRRRRR ESSSSSSSSTEEEEEEEEEEEEEEEEEEEEEE*****/
-    @RequestMapping(value= "/productos/listarProductos",method=RequestMethod.GET)
+    @RequestMapping(value= "/producto/listarProductos",method=RequestMethod.GET)
     public String listaProducto( Model model){
         List<Producto> productos = this.serviceProducto.obtenerTodosProductos();
         model.addAttribute("producto", productos);
@@ -168,11 +214,77 @@ public class Controlador {
         model.addAttribute("producto", productos);
         return "autenticacion";
     }
+ 
+    
+    //============================================================================================
+    //Categorias
+    //============================================================================================
+
+
+  @GetMapping("/categorias/seleccionarCategorias")
+  public String seleccionarCategorias(){
+      return "seleccion";
+  }
+  
+  @RequestMapping(value= "/categorias/seleccionarCategoria",method=RequestMethod.POST)
+	public String seleccionarCategoria(
+								  @RequestParam(name = "correoElectronico") String correoElectronico,
+								  @RequestParam(name = "suscripcion") String suscripcion){
+		/*int id, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
+			String correoElectronico, String direccion, String rol, int idDepartamento*/
+		try {
+			List<Usuario> usuarios=this.serviceUsuario.obtenerTodosUsuarios();
+			String c =correoElectronico;
+			String ss= suscripcion;
+			for (Usuario e: usuarios) {
+				String s= e.getCorreoElectronico();
+				if(e.getCorreoElectronico().equals(c)) {
+					e.setSuscripcion(ss);
+					this.serviceUsuario.crear(e);
+				}
+			}
+			return "seleccion";
+		}catch(Exception e) {
+			return "/";
+		}
+	}
+  	
+  @GetMapping("/user")
+  public String mostrarUsuario(Authentication auth){
+	  String userName =auth.getName();
+	  System.out.println("Usuario:"+userName);
+      return "userName";
+  }
+  
+  public String nP= "";
+  @PostMapping(value = "/agregar/listaDeseo")
+  public String agregarAlCarrito(Authentication auth, @RequestParam(name = "idProducto") String idProducto) {
+	  String userName =auth.getName();  
+	  
+	  try {
+			List<Usuario> usuarios=this.serviceUsuario.obtenerTodosUsuarios();
+			for (Usuario e: usuarios) {
+				if(e.getListaDeDeseos().equals("")) {
+					nP = idProducto ;
+				}else {
+					nP = e.getListaDeDeseos() + ','+ idProducto ;
+				}
+				
+				String s= e.getCorreoElectronico();
+				if(e.getCorreoElectronico().equals(userName)) {
+					e.setListaDeDeseos(nP);
+					this.serviceUsuario.crear(e);
+				}
+			}
+			return"exito";
+		}catch(Exception e) {
+			return"login";
+		}
+  }
+  
+
 
 }
-
-
-
 
 
 

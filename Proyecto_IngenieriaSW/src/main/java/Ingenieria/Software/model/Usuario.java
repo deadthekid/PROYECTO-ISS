@@ -28,6 +28,8 @@ public class Usuario {
 	private int idDepartamento;
 	private int telefono;
 	private String direccion;
+	private String  suscripcion;
+	private String listaDeDeseos;
 	
 	
 	
@@ -71,7 +73,7 @@ public class Usuario {
 	}
 	public Usuario( String primerNombre, String segundoNombre, String primerApellido,
 			String segundoApellido, String correoElectronico, String contrasenia, int idDepartamento, int telefono,
-			String direccion) {
+			String direccion, String suscripcion) {
 		super();
 		this.primerNombre = primerNombre;
 		this.segundoNombre = segundoNombre;
@@ -82,6 +84,7 @@ public class Usuario {
 		this.idDepartamento = idDepartamento;
 		this.telefono = telefono;
 		this.direccion = direccion;
+		this.setSuscripcion(suscripcion);
 	}
 
 	public void setPrimerNombre(String primerNombre) {
@@ -122,8 +125,23 @@ public class Usuario {
 		return idDepartamento;
 	}
 
-	
-	
+	public String getSuscripcion() {
+		return suscripcion;
+	}
 
+	public void setSuscripcion(String suscripcion) {
+		this.suscripcion = suscripcion;
+	}
 
+	public int getIdUsuario() {
+		return idUsuario;
+	}
+
+	public String getListaDeDeseos() {
+		return listaDeDeseos;
+	}
+
+	public void setListaDeDeseos(String listaDeDeseos) {
+		this.listaDeDeseos = listaDeDeseos;
+	}
 }
