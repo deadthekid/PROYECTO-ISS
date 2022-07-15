@@ -73,7 +73,7 @@ public class Usuario {
 	}
 	public Usuario( String primerNombre, String segundoNombre, String primerApellido,
 			String segundoApellido, String correoElectronico, String contrasenia, int idDepartamento, int telefono,
-			String direccion, String suscripcion) {
+			String direccion,String listaDeDeseos) {
 		super();
 		this.primerNombre = primerNombre;
 		this.segundoNombre = segundoNombre;
@@ -84,7 +84,7 @@ public class Usuario {
 		this.idDepartamento = idDepartamento;
 		this.telefono = telefono;
 		this.direccion = direccion;
-		this.setSuscripcion(suscripcion);
+		this.listaDeDeseos = listaDeDeseos;
 	}
 
 	public void setPrimerNombre(String primerNombre) {

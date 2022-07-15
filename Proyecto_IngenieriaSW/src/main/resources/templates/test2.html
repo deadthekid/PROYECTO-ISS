@@ -29,7 +29,7 @@
 </header>
 
     <div class="signup-form text-center">
-        <form th:action="@{/productos/ingresoProductos}" method="post" oninput='up2.setCustomValidity(up2.value != contrasenia.value ? "Las contraseñas no coinciden" : "")' enctype="multipart/form-data">
+        <form th:action="@{/productos/ingresoProductos}" method="post" oninput='up2.setCustomValidity(up2.value != contrasenia.value ? "Las contraseñas no coinciden" : "")' enctype="multipart/form-data" style="height: 590px;">
             <div class="text-center">
                 <img id="imagen" class="rounded" src="/images/logo-group.svg">
             </div>
@@ -79,16 +79,7 @@
                   Por favor seleccione una departamento.
                 </div>
               </div>
-              <div class="form-group text-secondary">
-                <select class="form-select form-control btn-secondary bg-light text-secondary " id="idUsuario" name="idUsuario"  required>
-
-                   <option value=" "  selected disabled hidden>Confirme su ID</option>
-                   <option value="1">UNO</option>
-               </select>
-              <div class="invalid-feedback">
-                Por favor seleccione una departamento.
-              </div>
-            </div>
+              
             <div class="form-group text-secondary">
                 <select class="form-select form-control btn-secondary bg-light text-secondary " id="idEstadoProducto" name="idEstadoProducto"  required>
 

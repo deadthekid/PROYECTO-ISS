@@ -67,10 +67,10 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent" style="align-items:flex-end">
                     <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <button class="btn btn-light" type="submit"><a href="/productos/crearProductos" id="enlace" style="margin-left:0; text-decoration: none;">Vender</a></button>
+                        <button class="btn btn-light" type="submit" style="margin-top: 10px;"><a href="/productos/crearProductos" id="enlace" style="margin-left:0; text-decoration: none;">Vender</a></button>
                     </li>
                     <li class="nav-item">
-                        <button class="btn btn-light" type="submit"><a href="/categorias/seleccionarCategorias" id="enlace" style="margin-left:0; text-decoration: none;">Inscribirse a Categorias</a></button>
+                        <button class="btn btn-light" type="submit" style="margin-top: 10px;"><a href="/categorias/seleccionarCategorias" id="enlace" style="margin-left:0; text-decoration: none;">Inscribirse a Categorias</a></button>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="index" id="enlace"><img src="/images/usuario.svg" alt="" width="50" height="20">Heber</a>
@@ -88,14 +88,14 @@
 
         <div class="container">
             <div class="row">
-                <div class="col-sm-6 col-md-4 col-xl-3 col-lg-3 mt-4 ml-5"  th:each="tmpProducto:${producto}">
+                <div class="col-12 col-sm-6 col-md-4 col-xl-3 col-lg-3 mt-4 ml-5"  th:each="tmpProducto:${producto}">
                     <a href="#" id="enlace">
                         <div class="card">
                             <img th:src= "@{'/imgt/' + ${tmpProducto.fotografias}}" class="card-img-top" alt="..." width="150px" height="150px">
-                            <div class="card-body">
-                                <h5 class="card-title" th:text="'Nombre: '+${tmpProducto.nombre}"><span>Vendedor<span></h5>
+                            <div class="card-body" style="padding-bottom: 1px;">
+                                <h5 class="card-title" th:text="${tmpProducto.nombre}"><span>Vendedor<span></h5>
                                 <p class="card-text" th:text="'LPS. '+${tmpProducto.precio}"></p>
-                                <p class="card-text" th:text="'Descripción: '+${tmpProducto.descripcion}"></p>
+                                <p class="card-text" th:text="'Fecha: '+${tmpProducto.fechaIngreso}"></p>
                                
                             </div>
                              
@@ -105,12 +105,12 @@
                     
                    
                     	
-                    	<form th:action="@{/agregar/listaDeseo}" method="post" id="loginForm"  oninput='up2.setCustomValidity(up2.value != contrasenia.value ? "Las contraseñas no coinciden" : "")' style="height: 483px !important; width: 389px; ">      
-            <div class="form-group">
-                <input type="text" th:value="${tmpProducto.idProducto}" id="idProducto" name="idProducto"> <i class="fa-regular fa-bookmark"></i>
+                    	<form th:action="@{/agregar/listaDeseo}" method="post" id="loginForm"  oninput='up2.setCustomValidity(up2.value != contrasenia.value ? "Las contraseñas no coinciden" : "")' >      
+            <div class="form-group" style="    height: 0px!important;">
+                <input type="text" th:value="${tmpProducto.idProducto}" id="idProducto" name="idProducto" style="visibility: hidden;">
             </div>
             <div class="form-group">
-                <button type="submit" class="btn bg-warning btn-lg btn-block" style="background-color:#E9B200">Iniciar</button>
+                <button type="submit" class="btn bg-warning btn-lg btn-block" style="background-color:#E9B200">Añadir a la lista de Deseos</button>
             </div>
         </form>
                     

@@ -99,3 +99,12 @@ body {
 .input-success {
     border: 1px solid green;
 }
+
+.correccion{
+	display: flex!important;
+	flex-direction: column!important;
+}
+
+.contenedor1{
+	flex:1
+}

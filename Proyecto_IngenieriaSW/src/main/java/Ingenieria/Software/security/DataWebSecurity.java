@@ -49,6 +49,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 	// Asignar permisos a URLs por ROLES
 	.antMatchers("/productos/**").hasAnyAuthority("usuario")
 	.antMatchers("/user/**").hasAnyAuthority("usuario")
+	.antMatchers("/user/**").hasAnyAuthority("usuario")
+	.antMatchers("/agregar/**").hasAnyAuthority("usuario")
 	// Todas las demás URLs de la Aplicación requieren autenticación
 	.anyRequest().authenticated()
 	// El formulario de Login no requiere autenticacion

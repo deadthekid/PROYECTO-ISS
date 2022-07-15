@@ -29,34 +29,107 @@
 </header>
 
     <div class="signup-form text-center">
-        <form th:action="@{/categorias/seleccionarCategoria}" method="post" oninput='up2.setCustomValidity(up2.value != contrasenia.value ? "Las contraseñas no coinciden" : "")'>
+        <form th:action="@{/categorias/seleccionarCategoria}" style="height: 480px!important;" method="post" oninput='up2.setCustomValidity(up2.value != contrasenia.value ? "Las contraseñas no coinciden" : "")'>
             <div class="text-center">
                 <img id="imagen" class="rounded" src="/images/logo-group.svg">
             </div>
-            <h2 class="text-warning" style="color:#E9B200 ;">Registrarse</h2>
-            <p class="hint-text">Crea tu cuenta y explora el mundo de vender y comprar</p>
-           
-            
-            <div class="form-group">
-                <input type="email" class="form-control btn-secondary bg-light text-secondary" id="correoElectronico" name="correoElectronico" placeholder="Correo electrónico" required="required">
+            <h2 class="text-warning" style="color:#E9B200 ;">Categorias</h2>
+            <p class="hint-text">Seleccione unicamente las categorias en las que quiere inscribirse</p>
+         
+            <div class="form-group text-secondary "  >
+              <div class="form-check correccion" aria-multiselectable="true">
+              <div class="container">
+              	<div class="row">
+              	<div class="col-6 pl-1 align-items-start" style="text-align: start;">
+              	<div>
+              	<input class="form-check-input" type="checkbox" value="Electronica" id="suscripcion" name="suscripcion" multiple>
+ 				<label class="form-check-label" for="suscripcion" name="suscripcion">
+   					Electrónica
+  				</label>
+              	</div>
+              	<div>
+              	<input class="form-check-input" type="checkbox" value="Futuros padres" id="suscripcion" name="suscripcion" multiple>
+ 				<label class="form-check-label" for="suscripcion" name="suscripcion">
+   					Futuros Padres
+  				</label>
+              	</div>
+              	<div>
+              	<input class="form-check-input" type="checkbox" value="Hogar" id="suscripcion" name="suscripcion" multiple>
+ 				<label class="form-check-label" for="suscripcion" name="suscripcion">
+   					Hogar
+  				</label>
+              	</div>
+              	<div>
+              	<input class="form-check-input" type="checkbox" value="Juguetes" id="suscripcion" name="suscripcion" multiple>
+ 				<label class="form-check-label" for="suscripcion" name="suscripcion">
+   					Juguetes
+  				</label>
+              	</div>
+              	<div>
+              	<input class="form-check-input" type="checkbox" value="Libros" id="suscripcion" name="suscripcion" multiple>
+ 				<label class="form-check-label" for="suscripcion" name="suscripcion">
+   					Libros
+  				</label>
+              	</div>
+              	
+              	
+              	<div>
+              	</div>
+              	<div>
+              	</div>
+              	
+              	<input class="form-check-input" type="checkbox" value="Mascotas" id="suscripcion" name="suscripcion" multiple>
+ 				<label class="form-check-label" for="suscripcion" name="suscripcion">
+   					Mascotas
+  				</label>
+              	</div>
+              	<div class="col-6 align-items-end" style="text-align: justify;">
+              	<div >
+              	<input class="form-check-input" type="checkbox" value="Moda" id="suscripcion" name="suscripcion" multiple >
+ 				<label class="form-check-label" for="suscripcion" name="suscripcion">
+   					Moda
+  				</label>
+              	</div>
+              	<div>
+              	<input class="form-check-input" type="checkbox" value="Vehiculos" id="suscripcion" name="suscripcion" multiple>
+ 				<label class="form-check-label" for="suscripcion" name="suscripcion">
+   					Vehículos
+  				</label>
+              	</div>
+              	<div>
+              	<input class="form-check-input" type="checkbox" value="Video juegos" id="suscripcion" name="suscripcion" multiple>
+ 				<label class="form-check-label" for="suscripcion" name="suscripcion">
+   					Video juegos
+  				</label>
+              	</div>
+              	<div>
+              	<input class="form-check-input" type="checkbox" value="Libros" id="suscripcion" name="suscripcion" multiple>
+ 				<label class="form-check-label" for="suscripcion" name="suscripcion">
+   					Libros
+  				</label>
+              	</div>
+              	
+              	<div>
+              	</div>
+              	<div>
+              	</div>
+              	
+              	<input class="form-check-input" type="checkbox" value="" id="suscripcion" name="suscripcion" multiple>
+ 				<label class="form-check-label" for="suscripcion" name="suscripcion">
+   					Ninguna
+  				</label>
+              	</div>
+ 				
+			</div>
+              	</div>
+              </div>
+              	
             </div>
             
-           
-            
-            
-            <div class="form-group text-secondary">
-               <select class="form-select form-control" multiple id="suscripcion" name="suscripcion">
-				  <option value="Electronica">Electronica</option>
-				  <option value="Padres">Padres</option>
-				  <option value="Hogar">Hogar</option>
-				  <option value="">Ninguna</option>
-				</select>
-            </div>
-            
             
             
             <div class="form-group">
-                <button type="submit" class="btn bg-warning btn-lg btn-block" style="background-color:#E9B200">Regístrate ahora</button>
+                <button type="submit" class="btn bg-warning btn-lg btn-block" style="background-color:#E9B200">Suscribirse</button>
             </div>
         </form>
         

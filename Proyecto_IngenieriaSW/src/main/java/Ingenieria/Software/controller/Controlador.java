@@ -65,7 +65,7 @@ public class Controlador {
 			}
 			
 		}
-		return"encriptar";
+		return"login";
 	}
 	
 	
@@ -115,14 +115,14 @@ public class Controlador {
 								  @RequestParam(name = "contrasenia") String contrasenia,
 								  @RequestParam(name = "idDepartamento") int idDepartamento,
 								  @RequestParam(name = "telefono") int telefono,
-								  @RequestParam(name = "direccion") String direccion,
-								  @RequestParam(name = "suscripcion") String suscripcion){
+								  @RequestParam(name = "direccion") String direccion){
 		/*int id, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
 			String correoElectronico, String direccion, String rol, int idDepartamento*/
 		try {
-			Usuario usuario= new Usuario(primerNombre,segundoNombre,primerApellido,segundoApellido,correoElectronico,contrasenia,idDepartamento,telefono,direccion,suscripcion);
+			String aux = "*";
+			Usuario usuario= new Usuario(primerNombre,segundoNombre,primerApellido,segundoApellido,correoElectronico,contrasenia,idDepartamento,telefono,direccion,aux);
 			this.serviceUsuario.crear(usuario);
-			return "login";
+			return "redirect:/encriptar";
 		}catch(Exception e) {
 			return "/";
 		}
@@ -166,14 +166,13 @@ public class Controlador {
 	
 
     @RequestMapping(value= "/productos/ingresoProductos",method=RequestMethod.POST)
-    public String crearUsuario(
+    public String crearUsuario(Authentication auth,
                                   @RequestParam(name = "nombre") String nombre,
                                   @RequestParam(name = "precio") int precio, 
                                   @RequestParam(name = "descripcion") String descripcion,
                                   @RequestParam(name = "fechaIngreso") @DateTimeFormat(iso = ISO.DATE) LocalDate fechaIngreso ,
                                   @RequestParam(name = "file") MultipartFile fotografias,
                                   @RequestParam(name = "idCategoria") int idCategoria,
-                                  @RequestParam(name = "idUsuario") int idUsuario,
                                   @RequestParam(name = "idEstadoProducto") int idEstadoProducto){
         /*String nombre, int precio, String descripcion, Date fechaIngreso,
             byte[] fotografias, int idCategoria, int idUsuario, String idEstadoProducto*/
@@ -181,6 +180,7 @@ public class Controlador {
     		Path directorioImagenes=Paths.get("src//main//resources//static/imgt");
     		String rutaAbsoluta = directorioImagenes.toFile().getAbsolutePath();
     		try {
+    			
     			byte[] bystesImg = fotografias.getBytes();
     			Path rutaCompleta = Paths.get(rutaAbsoluta+"//"+fotografias.getOriginalFilename());
     			Files.write(rutaCompleta, bystesImg);
@@ -189,12 +189,22 @@ public class Controlador {
     		}
     		
     		
+    		
     	}
 
         try {
+        	String userName =auth.getName();
+    		List<Usuario> lista = this.serviceUsuario.obtenerTodosUsuarios();
+    		int  idUsuario =0;
+    		for (Usuario e: lista) {
+    			if(e.getCorreoElectronico().equals(userName)) {
+    				idUsuario = e.getIdUsuario();
+    			}
+    			
+    		}
             Producto producto= new Producto(nombre,precio,descripcion,fechaIngreso,fotografias.getOriginalFilename(),idCategoria,idUsuario,idEstadoProducto);
             this.serviceProducto.crearProducto(producto);
-            return "login";
+            return "redirect:/productos/listarProducto";
         }catch(Exception e) {
             return "/";
         }
@@ -227,23 +237,23 @@ public class Controlador {
   }
   
   @RequestMapping(value= "/categorias/seleccionarCategoria",method=RequestMethod.POST)
-	public String seleccionarCategoria(
-								  @RequestParam(name = "correoElectronico") String correoElectronico,
+	public String seleccionarCategoria(Authentication auth,
+								  
 								  @RequestParam(name = "suscripcion") String suscripcion){
 		/*int id, String primerNombre, String segundoNombre, String primerApellido, String segundoApellido,
 			String correoElectronico, String direccion, String rol, int idDepartamento*/
 		try {
 			List<Usuario> usuarios=this.serviceUsuario.obtenerTodosUsuarios();
-			String c =correoElectronico;
+ 
+			String c =auth.getName();
 			String ss= suscripcion;
 			for (Usuario e: usuarios) {
-				String s= e.getCorreoElectronico();
 				if(e.getCorreoElectronico().equals(c)) {
 					e.setSuscripcion(ss);
 					this.serviceUsuario.crear(e);
 				}
 			}
-			return "seleccion";
+			return "redirect:/productos/listarProducto";
 		}catch(Exception e) {
 			return "/";
 		}
@@ -256,7 +266,13 @@ public class Controlador {
       return "userName";
   }
   
+  @GetMapping("/productos/listaDeseo")
+  public String listaDeseo(Authentication auth){
+      return "exito";
+  }
+  
   public String nP= "";
+  
   @PostMapping(value = "/agregar/listaDeseo")
   public String agregarAlCarrito(Authentication auth, @RequestParam(name = "idProducto") String idProducto) {
 	  String userName =auth.getName();  
@@ -264,7 +280,9 @@ public class Controlador {
 	  try {
 			List<Usuario> usuarios=this.serviceUsuario.obtenerTodosUsuarios();
 			for (Usuario e: usuarios) {
-				if(e.getListaDeDeseos().equals("")) {
+				String str1=e.getListaDeDeseos();
+				String str2= null;
+				if(e.getListaDeDeseos().equals("*")) {
 					nP = idProducto ;
 				}else {
 					nP = e.getListaDeDeseos() + ','+ idProducto ;
@@ -276,7 +294,7 @@ public class Controlador {
 					this.serviceUsuario.crear(e);
 				}
 			}
-			return"exito";
+			return "redirect:/productos/listarProducto";
 		}catch(Exception e) {
 			return"login";
 		}
@@ -285,23 +303,3 @@ public class Controlador {
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
