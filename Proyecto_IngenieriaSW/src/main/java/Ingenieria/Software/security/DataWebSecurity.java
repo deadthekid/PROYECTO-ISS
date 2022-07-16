@@ -23,7 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 	auth.jdbcAuthentication().dataSource(dataSource)
-	.usersByUsernameQuery("SELECT correoElectronico, contrasenia,'true' as enabled FROM usuario where correoElectronico=?")
+	.usersByUsernameQuery("SELECT correoElectronico, contrasenia,activo as enabled FROM usuario where correoElectronico=?")
 	.authoritiesByUsernameQuery("select correoElectronico, rol from usuario "
 	+ "where correoElectronico = ?");
 	}
@@ -51,6 +51,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 	.antMatchers("/user/**").hasAnyAuthority("usuario")
 	.antMatchers("/user/**").hasAnyAuthority("usuario")
 	.antMatchers("/agregar/**").hasAnyAuthority("usuario")
+	.antMatchers("/administradores/**").hasAnyAuthority("admin")
+	.antMatchers("/login/**").hasAnyAuthority("usuario","admin")
+	.antMatchers("/administradores/inicio").hasAnyAuthority("usuario")
 	// Todas las demás URLs de la Aplicación requieren autenticación
 	.anyRequest().authenticated()
 	// El formulario de Login no requiere autenticacion
@@ -58,7 +61,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 	.loginPage("/login")
 	.usernameParameter("username")
 	.passwordParameter("password")
-	.defaultSuccessUrl("/productos/listarProducto",true)
+	.defaultSuccessUrl("/login/inicio",true)
 	.permitAll();
 	
 	

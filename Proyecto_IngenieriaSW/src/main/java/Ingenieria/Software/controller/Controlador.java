@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,9 +29,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import Ingenieria.Software.model.Anuncio;
 import Ingenieria.Software.model.Departamento;
 import Ingenieria.Software.model.Producto;
 import Ingenieria.Software.model.Usuario;
+import Ingenieria.Software.repository.RepositoryAnuncio;
+import Ingenieria.Software.service.ServiceAnuncio;
 import Ingenieria.Software.service.ServiceDepartamento;
 import Ingenieria.Software.service.ServiceProducto;
 import Ingenieria.Software.service.ServiceUsuario;
@@ -46,6 +50,8 @@ public class Controlador {
 	@Autowired
 	ServiceProducto serviceProducto;
 	
+	@Autowired
+	ServiceAnuncio serviceAnuncio;
 	
 	//============================================================================================
 	//Seguridad
@@ -67,6 +73,7 @@ public class Controlador {
 		}
 		return"login";
 	}
+	
 	
 	
 	
@@ -120,7 +127,8 @@ public class Controlador {
 			String correoElectronico, String direccion, String rol, int idDepartamento*/
 		try {
 			String aux = "*";
-			Usuario usuario= new Usuario(primerNombre,segundoNombre,primerApellido,segundoApellido,correoElectronico,contrasenia,idDepartamento,telefono,direccion,aux);
+			String aux2 ="usuario";
+			Usuario usuario= new Usuario(primerNombre,segundoNombre,primerApellido,segundoApellido,correoElectronico,contrasenia,idDepartamento,telefono,direccion,aux2,aux);
 			this.serviceUsuario.crear(usuario);
 			return "redirect:/encriptar";
 		}catch(Exception e) {
@@ -219,9 +227,12 @@ public class Controlador {
     }
     
     @RequestMapping(value= "/productos/listarProducto",method=RequestMethod.GET)
-    public String listarProducto( Model model){
+    public String listarProducto(Model model){
+    	
+    	
         List<Producto> productos = this.serviceProducto.obtenerTodosProductos();
         model.addAttribute("producto", productos);
+        
         return "autenticacion";
     }
  
@@ -229,7 +240,6 @@ public class Controlador {
     //============================================================================================
     //Categorias
     //============================================================================================
-
 
   @GetMapping("/categorias/seleccionarCategorias")
   public String seleccionarCategorias(){
@@ -300,6 +310,62 @@ public class Controlador {
 		}
   }
   
+	//============================================================================================
+	//Administradores
+	//============================================================================================
+  @RequestMapping(value= "/login/inicio",method=RequestMethod.GET)
+  public String seleccionInicio(Authentication auth,Model model){
+	  String correo = auth.getName();
+	  String retorno= "redirect:/pagina/paginaPrincipal";
+
+	  List<Producto> productos = this.serviceProducto.obtenerTodosProductos();
+      model.addAttribute("producto", productos);
+	  
+			List<Usuario> usuarios=this.serviceUsuario.obtenerTodosUsuarios();
+			for (Usuario e: usuarios) {
+				if(e.getCorreoElectronico().equals(correo)&&e.getRol().equals("admin")) {
+					retorno= "redirect:/administradores/paginaInicio";
+				}	
+			}
+			return retorno;    
+  }
+  
+  
+  @GetMapping("/administradores/paginaPrincipal")
+  public String adminsitradoresPrincipal(){
+      return "desarrolladorPrincipal";
+  }
+  
+  @GetMapping("/pagina/paginaPrincipal")
+  public String clientesPrincipal(){
+      return "autenticacion";
+  }
+  
+  @GetMapping("/administradores/paginaInicio")
+  public String adminsitradoresInicio(){
+      return "autenticacionAdministrador";
+  }
+  
+  @GetMapping("/administradores/actualizarPlazo")
+  public String adminsitradoresAnuncio(Model model){
+	  Anuncio anuncios = this.serviceAnuncio.BuscarAnuncio(1);
+      model.addAttribute("anuncio", anuncios);
+      return "actualizarPlazo";
+  }
+  
+  @PostMapping(value = "/administradores/actualizarDias")
+  public String actualizarPlazo(@RequestParam(name = "diasExpiracion") int diasExpiracion) {
+	  List<Anuncio> anuncios=this.serviceAnuncio.obtenerTodosAnuncios();
+		for (Anuncio e: anuncios) {
+			int expiracionActual=diasExpiracion;
+			e.setDiasExpiracion(expiracionActual);
+			this.serviceAnuncio.crearAnuncio(e);
+			
+		}
+	  
+	  return "redirect:/administradores/actualizarPlazo";
+	  
+  }
 
 
 }

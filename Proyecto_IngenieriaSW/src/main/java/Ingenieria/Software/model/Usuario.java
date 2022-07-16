@@ -27,12 +27,16 @@ public class Usuario {
 	private String contrasenia;
 	private int idDepartamento;
 	private int telefono;
+	
 	private String direccion;
+	private String rol;
 	private String  suscripcion;
 	private String listaDeDeseos;
+	private boolean activo;
 	
 	
 	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "idDepartamento", referencedColumnName = "idDepartamento", insertable = false, updatable = false)
 	@JsonBackReference
@@ -73,7 +77,7 @@ public class Usuario {
 	}
 	public Usuario( String primerNombre, String segundoNombre, String primerApellido,
 			String segundoApellido, String correoElectronico, String contrasenia, int idDepartamento, int telefono,
-			String direccion,String listaDeDeseos) {
+			String direccion,String rol,String listaDeDeseos) {
 		super();
 		this.primerNombre = primerNombre;
 		this.segundoNombre = segundoNombre;
@@ -84,6 +88,7 @@ public class Usuario {
 		this.idDepartamento = idDepartamento;
 		this.telefono = telefono;
 		this.direccion = direccion;
+		this.rol=rol;
 		this.listaDeDeseos = listaDeDeseos;
 	}
 
@@ -144,4 +149,20 @@ public class Usuario {
 	public void setListaDeDeseos(String listaDeDeseos) {
 		this.listaDeDeseos = listaDeDeseos;
 	}
+	
+	public boolean isActivo() {
+		return activo;
+	}
+
+	public void setActivo(boolean activo) {
+		this.activo = activo;
+	}
+
+	public String getRol() {
+		return rol;
+	}
+
+	
+	
+
 }
