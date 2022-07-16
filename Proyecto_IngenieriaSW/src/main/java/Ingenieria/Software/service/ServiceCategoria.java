@@ -1,7 +1,11 @@
 package Ingenieria.Software.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import Ingenieria.Software.model.Anuncio;
 import Ingenieria.Software.model.Categoria;
 import Ingenieria.Software.repository.RepositoryCategoria;
 
@@ -26,6 +30,10 @@ public class ServiceCategoria {
 	public void eliminarCategoria(int idCategoria) {
 		this.repositoryCategoria.deleteById(idCategoria);
 		
+	}
+	
+	public List<Categoria> obtenerTodasCategoria(){
+		return this.repositoryCategoria.findAll();
 	}
 	
 	

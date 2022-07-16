@@ -30,11 +30,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import Ingenieria.Software.model.Anuncio;
+import Ingenieria.Software.model.Categoria;
 import Ingenieria.Software.model.Departamento;
 import Ingenieria.Software.model.Producto;
 import Ingenieria.Software.model.Usuario;
 import Ingenieria.Software.repository.RepositoryAnuncio;
 import Ingenieria.Software.service.ServiceAnuncio;
+import Ingenieria.Software.service.ServiceCategoria;
 import Ingenieria.Software.service.ServiceDepartamento;
 import Ingenieria.Software.service.ServiceProducto;
 import Ingenieria.Software.service.ServiceUsuario;
@@ -52,6 +54,9 @@ public class Controlador {
 	
 	@Autowired
 	ServiceAnuncio serviceAnuncio;
+	
+	@Autowired
+	ServiceCategoria serviceCategoria;
 	
 	//============================================================================================
 	//Seguridad
@@ -128,7 +133,8 @@ public class Controlador {
 		try {
 			String aux = "*";
 			String aux2 ="usuario";
-			Usuario usuario= new Usuario(primerNombre,segundoNombre,primerApellido,segundoApellido,correoElectronico,contrasenia,idDepartamento,telefono,direccion,aux2,aux);
+			boolean aux3 = true;
+			Usuario usuario= new Usuario(primerNombre,segundoNombre,primerApellido,segundoApellido,correoElectronico,contrasenia,idDepartamento,telefono,direccion,aux2,aux,aux3);
 			this.serviceUsuario.crear(usuario);
 			return "redirect:/encriptar";
 		}catch(Exception e) {
@@ -366,6 +372,20 @@ public class Controlador {
 	  return "redirect:/administradores/actualizarPlazo";
 	  
   }
-
+  
+  @GetMapping(value = "/administradores/categorias")
+  public String adminsitradoresCategoria(Model model){
+	  List<Categoria> categoria = this.serviceCategoria.obtenerTodasCategoria();
+      model.addAttribute("categoria", categoria);
+      return "categoriaAdministracion";
+  }
+  
+  @PostMapping(value = "/administradores/eliminarCategoria")
+  public String eliminarCategoria(@RequestParam(name = "idCategoria") int idCategoria) {
+	  this.serviceCategoria.eliminarCategoria(idCategoria);
+	  
+	  return "redirect:/administradores/categorias";
+	  
+  }
 
 }

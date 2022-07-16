@@ -77,7 +77,7 @@ public class Usuario {
 	}
 	public Usuario( String primerNombre, String segundoNombre, String primerApellido,
 			String segundoApellido, String correoElectronico, String contrasenia, int idDepartamento, int telefono,
-			String direccion,String rol,String listaDeDeseos) {
+			String direccion,String rol,String listaDeDeseos, boolean activo) {
 		super();
 		this.primerNombre = primerNombre;
 		this.segundoNombre = segundoNombre;
@@ -90,6 +90,7 @@ public class Usuario {
 		this.direccion = direccion;
 		this.rol=rol;
 		this.listaDeDeseos = listaDeDeseos;
+		this.activo = activo;
 	}
 
 	public void setPrimerNombre(String primerNombre) {
