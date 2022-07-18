@@ -147,7 +147,9 @@ public class Controlador {
 	/***************************************************************PRODUCTO**********************************************************************/
 
 	@GetMapping("/productos/crearProductos")
-    public String registrarProductos(){
+    public String registrarProductos(Model model){
+		List<Categoria> categoria = this.serviceCategoria.obtenerTodasCategoria();
+	    model.addAttribute("categoria", categoria);
         return "test2";
     }
 	
@@ -343,12 +345,15 @@ public class Controlador {
   }
   
   @GetMapping("/pagina/paginaPrincipal")
-  public String clientesPrincipal(){
+  public String clientesPrincipal(Model model){
+	  List<Producto> productos = this.serviceProducto.obtenerTodosProductos();
+      model.addAttribute("producto", productos);
       return "autenticacion";
   }
   
   @GetMapping("/administradores/paginaInicio")
-  public String adminsitradoresInicio(){
+  public String adminsitradoresInicio(Model model){
+	 
       return "autenticacionAdministrador";
   }
   
@@ -386,6 +391,50 @@ public class Controlador {
 	  
 	  return "redirect:/administradores/categorias";
 	  
+  }
+  
+  @GetMapping(value ="/administradores/actualizarCategoria")
+  public String adminsitradoresActualizarCategoria(Model model){
+      List<Categoria> categoria = this.serviceCategoria.obtenerTodasCategoria();
+      model.addAttribute("categoria", categoria);
+      return "actualizarCategoria";
+  }
+
+
+  @PostMapping(value ="/administradores/actualizarCategoria")
+  public String actualizarCategoria(@RequestParam(name = "idCategoria") int idCategoria,
+          @RequestParam(name = "nombre") String nombre) {
+      List<Categoria> categoria=this.serviceCategoria.obtenerTodasCategoria();
+        for (Categoria c: categoria) {
+            if(c.getIdCategoria()==idCategoria) {
+            String categoriaActual=nombre;
+            c.setNombre(categoriaActual);
+            this.serviceCategoria.crearCategoria(c);
+            
+        }
+        }
+      return "redirect:/administradores/actualizarCategoria";
+
+  }
+  
+  @PostMapping(value ="/administradores/administrarUsuario")
+  public String bannearUsuario(@RequestParam(name = "idUsuario") int idUsuario,
+          @RequestParam(name = "activo") boolean activo) {
+      List<Usuario> usuario=this.serviceUsuario.obtenerTodosUsuarios();
+        for (Usuario u: usuario) {
+            if(u.getIdUsuario()==idUsuario) {
+            boolean EstadoUsuario=activo;
+            u.setActivo(EstadoUsuario);
+            this.serviceUsuario.crear(u);
+        }
+        }
+        return "redirect:/administradores/actualizarUsuarios";
+  }
+@GetMapping(value ="/administradores/actualizarUsuarios")
+  public String adminsitrarUsuarios(Model model){
+      List<Usuario> usuarios = this.serviceUsuario.obtenerTodosUsuarios();
+      model.addAttribute("usuarios", usuarios);
+      return "bannearUsuarios";
   }
 
 }

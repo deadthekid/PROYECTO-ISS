@@ -10,7 +10,10 @@
     <script src="https://kit.fontawesome.com/e6ebadea27.js" crossorigin="anonymous"></script>
     <title>Barra de Usuario</title>
 </head>
-<body>
+<body style="background-image: url('/images/fondo-a.jpg');    width: 100%;
+    height: 100vh;
+    background-repeat: no-repeat;
+    background-size: cover;">
 
     <header>
         <nav class="navbar navbar-expand-lg">
@@ -18,7 +21,7 @@
                 <a class="navbar-brand" href="inicio.html">
                     <img src="/images/logo-group.svg" alt="" width="100" height="74">
                 </a>
-                <select class="form-select btn-secondary bg-light text-secondary ml-5 mr-5" id="idDepartamento" name="idDepartamento" style="width:100px; border-width: 0px; border-radius: 5px;" required>
+                <select class="form-select btn-secondary bg-light text-secondary ml-5 mr-5" id="idDepartamento" name="idDepartamento" style="width:100px; visibility: hidden;border-width: 0px; border-radius: 5px;" required >
 
                     <option value=" "  selected disabled hidden>Ubicación</option>
                     <option value="1">Yoro</option>
@@ -42,7 +45,7 @@
                     
                     
                 </select>
-                <form class="d-flex ml-xl-5" role="search">
+                <form class="d-flex ml-xl-5" role="search" style="visibility: hidden;">
                     <input class="form-control me-2 w-100" type="search" placeholder="" aria-label="Search">
                     <select class="form-select btn-secondary bg-light text-secondary w-50" id="categoria" name="categoria" style="border-width: 0px; border-radius:5px;" required>
 
@@ -66,17 +69,17 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent" style="align-items:flex-end">
                     <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <button class="btn btn-light" type="submit" style="margin-top: 10px;"><a href="/productos/crearProductos" id="enlace" style="margin-left:0; text-decoration: none;">Vender</a></button>
+                    <li class="nav-item" style="visibility: hidden;">
+                        <button class="btn btn-light" type="submit" style="margin-top: 10px;"><a href="/productos/crearProductos" id="enlace" style="margin-left:0; text-decoration: none; ">Vender</a></button>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" style="visibility: hidden;">
                         <button class="btn btn-light" type="submit" style="margin-top: 10px;"><a href="/categorias/seleccionarCategorias" id="enlace" style="margin-left:0; text-decoration: none;">Inscribirse a Categorias</a></button>
                     </li>
                     <li class="nav-item">
                         <button class="btn btn-light" type="submit" style="margin-top: 10px;"><a href="/administradores/paginaPrincipal" id="enlace" style="margin-left:0; text-decoration: none;">Area de Administracion</a></button>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="index" id="enlace"><img src="/images/usuario.svg" alt="" width="50" height="20">Heber</a>
+                        <a class="nav-link active" aria-current="page" href="index" id="enlace"><img src="/images/usuario.svg" alt="" width="50" height="20">Bienvenido, <span sec:authentication="name">Username</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link ml-auto" href="#" id="enlace"><img src="/images/carrito.svg" alt="" width="60" height="40"></a>
@@ -89,7 +92,10 @@
     <div style="margin-top: 50px;">
         <a href="/busqueda" id="enlace">Recientes</a>
 
-        <div class="container">
+        <div class="container" style="background-image: url('/images/fondo-a.jpg');    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;">
             <div class="row">
                 <div class="col-12 col-sm-6 col-md-4 col-xl-3 col-lg-3 mt-4 ml-5"  th:each="tmpProducto:${producto}">
                     <a href="#" id="enlace">

@@ -27,7 +27,9 @@ public class Usuario {
 	private String contrasenia;
 	private int idDepartamento;
 	private int telefono;
+	private String denuncia;
 	
+
 	private String direccion;
 	private String rol;
 	private String  suscripcion;
@@ -161,6 +163,14 @@ public class Usuario {
 
 	public String getRol() {
 		return rol;
+	}
+	
+	public String getDenuncia() {
+		return denuncia;
+	}
+
+	public void setDenuncia(String denuncia) {
+		this.denuncia = denuncia;
 	}
 
 	
