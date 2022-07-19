@@ -11,6 +11,9 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.security.core.Authentication;
@@ -35,14 +38,17 @@ import Ingenieria.Software.model.Departamento;
 import Ingenieria.Software.model.Producto;
 import Ingenieria.Software.model.Usuario;
 import Ingenieria.Software.repository.RepositoryAnuncio;
+import Ingenieria.Software.repository.RepositoryProducto;
 import Ingenieria.Software.service.ServiceAnuncio;
 import Ingenieria.Software.service.ServiceCategoria;
 import Ingenieria.Software.service.ServiceDepartamento;
 import Ingenieria.Software.service.ServiceProducto;
 import Ingenieria.Software.service.ServiceUsuario;
+import Ingenieria.Software.utils.RenderizadorPaginas;
 
 @Controller
 public class Controlador {
+	
 	@Autowired
 	ServiceUsuario serviceUsuario;
 	
@@ -57,6 +63,8 @@ public class Controlador {
 	
 	@Autowired
 	ServiceCategoria serviceCategoria;
+	
+	RepositoryProducto repositoryProducto;
 	
 	//============================================================================================
 	//Seguridad
@@ -345,9 +353,12 @@ public class Controlador {
   }
   
   @GetMapping("/pagina/paginaPrincipal")
-  public String clientesPrincipal(Model model){
-	  List<Producto> productos = this.serviceProducto.obtenerTodosProductos();
-      model.addAttribute("producto", productos);
+  public String clientesPrincipal(@RequestParam (name="page",defaultValue="0")int page, Model model){
+	  Pageable userPageable = PageRequest.of(page, 3);
+	  Page<Producto> producto= this.serviceProducto.obtenerTodosProductos(userPageable);
+	  RenderizadorPaginas<Producto> renderizadorPaginas = new RenderizadorPaginas<Producto>("autenticacion",producto);
+      model.addAttribute("page", renderizadorPaginas);
+      model.addAttribute("producto", producto);
       return "autenticacion";
   }
   

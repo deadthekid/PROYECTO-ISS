@@ -5,6 +5,8 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import Ingenieria.Software.model.Producto;
@@ -32,4 +34,10 @@ public class ServiceProducto {
 	public List<Producto> obtenerTodosProductos(){
 		return this.repositoryProducto.findAll();
 	}
+	
+	public Page<Producto> obtenerTodosProductos(Pageable pegeable){
+		return this.repositoryProducto.findAll(pegeable);
+	}
+	
+	
 }
