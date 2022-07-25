@@ -40,7 +40,7 @@ public class GeneradorPDF {
 		PdfWriter.getInstance(document,out);
 		document.open();
 		Font font = FontFactory.getFont(FontFactory.COURIER, 18, BaseColor.BLACK);
-		Paragraph para = new Paragraph("Productos de su sugeridos",font);
+		Paragraph para = new Paragraph("Productos sugeridos",font);
 		para.setAlignment(Element.ALIGN_CENTER);
 		document.add(para);
 		document.add(Chunk.NEWLINE);
@@ -94,8 +94,11 @@ public class GeneradorPDF {
 		
 	}
 	try {
-		FileOutputStream fos = new FileOutputStream ("D:\\OneDrive\\Documentos\\GitHub\\PROYECTO-ISS\\Proyecto_IngenieriaSW\\src\\main\\resources\\static\\pdf\\10.pdf", true);
+		FileOutputStream fos = new FileOutputStream ("C:\\Users\\Victor\\Documents\\GitHub\\PROYECTO-ISS\\Proyecto_IngenieriaSW\\src\\main\\resources\\static\\pdf\\10.pdf", true);
+		
 		fos.write(out.toByteArray());
+        fos.close();
+		
 	} catch (FileNotFoundException e1) {
 		// TODO Auto-generated catch block
 		e1.printStackTrace();

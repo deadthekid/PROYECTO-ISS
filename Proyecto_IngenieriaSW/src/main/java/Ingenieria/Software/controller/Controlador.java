@@ -24,9 +24,11 @@ import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -62,6 +64,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+
+@Component
 
 @Controller
 public class Controlador {
@@ -634,5 +638,44 @@ public static void main(String[] args) throws IOException
     System.out.println(new String(bytes));
 }
 
+//Tareas Autoprogramadas
 
+@Scheduled(cron = "0 * * ? * *")
+public void scheduleTaskUsingCronExpression() throws MessagingException, IOException {
+	
+	
+	List<Usuario> usuarios = this.serviceUsuario.obtenerTodosUsuarios();
+    List<Producto> productosCategoria = this.serviceProducto.obtenerTodosProductos();
+    List<Producto> ListaVacia = new ArrayList<Producto>();
+    
+	
+    
+    for(Usuario u : usuarios) {
+
+
+          for(Producto p : productosCategoria) {
+             String empty_str = ""; 
+             empty_str = u.getSuscripcion();
+             String[] split = empty_str.split(",");
+             for (int i=0; i<split.length; i++) {
+                 if(p.getIdCategoria()==Integer.parseInt(split[i]))
+
+                     ListaVacia.add(p);
+                   System.out.println("Done");
+             }
+
+          }
+
+          GeneradorPDF.customerPDFReport(ListaVacia);
+          service.sendEmailWithAttachment(u.getCorreoElectronico(),
+                  "test",
+                  "test",
+                  "src//main//resources//static/pdf//10.pdf");
+          System.out.println("entro");
+
+          ListaVacia.clear();
+   }
 }
+}
+
+
