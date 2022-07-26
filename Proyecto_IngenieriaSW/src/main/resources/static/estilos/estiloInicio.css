@@ -22,3 +22,7 @@ header {
     color: black;
     background-color:  rgba(255, 195, 0, 1);
 }
+
+.correcion-borde:focus{
+	border: none;
+}

@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Random;
 
 import javax.mail.MessagingException;
 
@@ -550,12 +551,13 @@ public class Controlador {
         }
         return "redirect:/administradores/actualizarUsuarios";
   }
+  
 @GetMapping(value ="/administradores/actualizarUsuarios")
   public String adminsitrarUsuarios(Model model){
       List<Usuario> usuarios = this.serviceUsuario.obtenerTodosUsuarios();
       model.addAttribute("usuarios", usuarios);
       return "bannearUsuarios";
-  }
+}
 
 
 //CORREO
@@ -563,15 +565,9 @@ public class Controlador {
 public String index(){
     return "send_mail_view";
 }
-/*
-@PostMapping("/sendMail")
-public String sendMail(@RequestParam("name") String name, @RequestParam("mail") String mail, @RequestParam("subject") String subject, @RequestParam("body") String body){
 
-    String message = body +"\n\n Datos de contacto: " + "\nNombre: " + name + "\nE-mail: " + mail;
-    mailService.sendMail("testspringcorrreo@gmail.com", mail, subject, message);
-    
-    return "send_mail_view";
-}*/
+
+
 
 @PostMapping("/sendMail")
 public String triggerMail(Authentication auth,@RequestParam("name") String name, 
@@ -602,7 +598,7 @@ public String triggerMail(Authentication auth,@RequestParam("name") String name,
 public void triggerMail2(String mail) throws MessagingException {
 	
 
-	service.sendEmailWithAttachment("hebermeza0@gmail.com",
+	service.sendEmailWithAttachment(mail,
 			"test",
 			"test",
 			"src//main//resources//static/pdf//10.pdf");
@@ -639,7 +635,7 @@ public static void main(String[] args) throws IOException
 }
 
 //Tareas Autoprogramadas
-
+/*
 @Scheduled(cron = "0 * * ? * *")
 public void scheduleTaskUsingCronExpression() throws MessagingException, IOException {
 	
@@ -676,6 +672,80 @@ public void scheduleTaskUsingCronExpression() throws MessagingException, IOExcep
           ListaVacia.clear();
    }
 }
+*/
+
+// ****************************************RECUPERACION DE CONTRASEÑA********************************************************
+@GetMapping("/usuarios/recuperarCredenciales")
+public String recuperacion1(){
+    return "recuperarCredenciales";
+}
+
+@GetMapping("/usuarios/r")
+public String r(){
+    return "reestablecerContrasenia";
+}
+
+@PostMapping("/usuarios/reinicioContraseña")
+public String reinicioContraseña(@RequestParam("correo") String correo) throws MessagingException {
+	List<Usuario> usuarios=this.serviceUsuario.obtenerTodosUsuarios();
+	for (Usuario e: usuarios) {
+		if(e.getCorreoElectronico().equals(correo)) {
+			int contraseniaAux = generateRandomIntIntRange(1000,3000);
+			e.setContrasenia(String.valueOf(contraseniaAux));
+			this.serviceUsuario.crear(e);
+			service.sendEmailWithAttachment(e.getCorreoElectronico(),
+					String.valueOf(contraseniaAux),
+	                  "Clave para reinicio de Contraseña",
+	                  "src//main//resources//static/images//logo-group.jpg");
+			
+		}
+	}
+	
+	return "codigo";
+
+}
+
+public static int generateRandomIntIntRange(int min, int max) {
+    Random r = new Random();
+    return r.nextInt((max - min) + 1) + min;
+}
+
+@PostMapping("/usuarios/restablecerContraseña")
+public String restablecerContraseña(@RequestParam("clave") String clave){
+	List<Usuario> usuarios=this.serviceUsuario.obtenerTodosUsuarios();
+	for (Usuario e: usuarios) {
+		if(e.getContrasenia().equals(clave)) {
+			e.setContrasenia("*");
+			this.serviceUsuario.crear(e);
+			return "reestablecerContrasenia";
+		}
+	}
+	return "recuperarCredenciales";
+}
+	
+	@PostMapping("/usuarios/nuevaContraseña")
+	public String nuevaContraseña(@RequestParam("contrasenia") String contrasenia) throws MessagingException {
+		List<Usuario> usuarios=this.serviceUsuario.obtenerTodosUsuarios();
+		for (Usuario e: usuarios) {
+			if(e.getContrasenia().equals("*")) {
+				e.setContrasenia(contrasenia);
+				this.serviceUsuario.crear(e);
+				service.sendEmailWithAttachment(e.getCorreoElectronico(),
+			              "Restablecimiento de Contraseña",
+			              "Se restablecio su contraseña exitosamente",
+			              "src//main//resources//static/images//carita-feliz.jpg");
+		}
+		
+		
+		
+		
+
+		}
+		return "redirect:/encriptar";
+	
+	
+	}
+
 }
 
 
