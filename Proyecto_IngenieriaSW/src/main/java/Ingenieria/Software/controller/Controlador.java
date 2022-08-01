@@ -46,6 +46,10 @@ import org.springframework.web.multipart.MultipartFile;
 import Ingenieria.Software.model.Anuncio;
 import Ingenieria.Software.model.Categoria;
 import Ingenieria.Software.model.Departamento;
+import Ingenieria.Software.model.Estadistica;
+import Ingenieria.Software.model.Estadistica2;
+import Ingenieria.Software.model.EstadisticaGeneral;
+import Ingenieria.Software.model.EstadoProducto;
 import Ingenieria.Software.model.Producto;
 import Ingenieria.Software.model.Usuario;
 import Ingenieria.Software.repository.RepositoryAnuncio;
@@ -55,6 +59,7 @@ import Ingenieria.Software.service.MailService;
 import Ingenieria.Software.service.ServiceAnuncio;
 import Ingenieria.Software.service.ServiceCategoria;
 import Ingenieria.Software.service.ServiceDepartamento;
+import Ingenieria.Software.service.ServiceEstadoProducto;
 import Ingenieria.Software.service.ServiceProducto;
 import Ingenieria.Software.service.ServiceUsuario;
 import Ingenieria.Software.utils.GeneradorPDF;
@@ -86,10 +91,12 @@ public class Controlador {
 	@Autowired
 	ServiceCategoria serviceCategoria;
 	
+	@Autowired
+	ServiceEstadoProducto serviceEstadoProducto;
+	
 	RepositoryProducto repositoryProducto;
 	
-	@Autowired
-    private MailService mailService;
+
 	
 	@Autowired
 	private EmailSenderService service;
@@ -100,7 +107,7 @@ public class Controlador {
 	@GetMapping(value="/PdfProducto",produces = MediaType.APPLICATION_PDF_VALUE)
 	public ResponseEntity<InputStreamResource> customersReport() throws IOException, MessagingException {
 		
-		 List<Producto> costumers = this.serviceProducto.obtenerTodosProductos();
+
 		 List<Usuario> usuarios = this.serviceUsuario.obtenerTodosUsuarios();
 		 List<Producto> productosCategoria = this.serviceProducto.obtenerTodosProductos();
 		 List<Categoria> Categorias = this.serviceCategoria.obtenerTodasCategoria();
@@ -108,9 +115,6 @@ public class Controlador {
 		 ArrayList<String> arreglo1 = new ArrayList<String>();
 		 ArrayList<Integer> arreglo2 = new ArrayList<Integer>();
 		 String empty_str = "";
-		 Path directorioImagenes=Paths.get("src//main//resources//static/pdf");
-		 String rutaAbsoluta = directorioImagenes.toFile().getAbsolutePath();
-		 Path rutaCompleta = Paths.get(rutaAbsoluta+"//");
 		
 		 /* 
 		 Path directorioImagenes=Paths.get("src//main//resources//static/pdf");
@@ -206,7 +210,9 @@ public class Controlador {
 		return "index";
 	}
 	@GetMapping("/")
-	public String registrarCompani(){
+	public String registrarCompani(Model model){
+		List<Producto> producto = this.serviceProducto.obtenerTodosProductos();
+        model.addAttribute("producto", producto);
 		return "inicio";
 	}
 	
@@ -252,7 +258,8 @@ public class Controlador {
 			String aux = "*";
 			String aux2 ="usuario";
 			boolean aux3 = true;
-			Usuario usuario= new Usuario(primerNombre,segundoNombre,primerApellido,segundoApellido,correoElectronico,contrasenia,idDepartamento,telefono,direccion,aux2,aux,aux3);
+			int aux4=0;
+			Usuario usuario= new Usuario(primerNombre,segundoNombre,primerApellido,segundoApellido,correoElectronico,contrasenia,idDepartamento,telefono,direccion,aux2,aux,aux3,aux4);
 			this.serviceUsuario.crear(usuario);
 			return "redirect:/encriptar";
 		}catch(Exception e) {
@@ -338,7 +345,7 @@ public class Controlador {
     		}
             Producto producto= new Producto(nombre,precio,descripcion,fechaIngreso,fotografias.getOriginalFilename(),idCategoria,idUsuario,idEstadoProducto);
             this.serviceProducto.crearProducto(producto);
-            return "redirect:/productos/listarProducto";
+            return "redirect:/pagina/paginaPrincipal";
         }catch(Exception e) {
             return "/";
         }
@@ -356,8 +363,8 @@ public class Controlador {
     public String listarProducto(Model model){
     	
     	
-        List<Producto> productos = this.serviceProducto.obtenerTodosProductos();
-        model.addAttribute("producto", productos);
+        List<Producto> producto = this.serviceProducto.obtenerTodosProductos();
+        model.addAttribute("producto", producto);
         
         return "autenticacion";
     }
@@ -389,7 +396,7 @@ public class Controlador {
 					this.serviceUsuario.crear(e);
 				}
 			}
-			return "redirect:/productos/listarProducto";
+			return "redirect:/pagina/paginaPrincipal";
 		}catch(Exception e) {
 			return "/";
 		}
@@ -416,21 +423,19 @@ public class Controlador {
 	  try {
 			List<Usuario> usuarios=this.serviceUsuario.obtenerTodosUsuarios();
 			for (Usuario e: usuarios) {
-				String str1=e.getListaDeDeseos();
-				String str2= null;
+
 				if(e.getListaDeDeseos().equals("*")) {
 					nP = idProducto ;
 				}else {
 					nP = e.getListaDeDeseos() + ','+ idProducto ;
 				}
-				
-				String s= e.getCorreoElectronico();
+
 				if(e.getCorreoElectronico().equals(userName)) {
 					e.setListaDeDeseos(nP);
 					this.serviceUsuario.crear(e);
 				}
 			}
-			return "redirect:/productos/listarProducto";
+			return "redirect:/pagina/paginaPrincipal";
 		}catch(Exception e) {
 			return"login";
 		}
@@ -552,10 +557,16 @@ public class Controlador {
         return "redirect:/administradores/actualizarUsuarios";
   }
   
-@GetMapping(value ="/administradores/actualizarUsuarios")
+  @GetMapping(value ="/administradores/actualizarUsuarios")
   public String adminsitrarUsuarios(Model model){
       List<Usuario> usuarios = this.serviceUsuario.obtenerTodosUsuarios();
-      model.addAttribute("usuarios", usuarios);
+      List<Usuario> usuariosDenunciados = new ArrayList<Usuario>();
+      for (Usuario u: usuarios) {
+    	  if(u.getDenuncia() != null) {
+    		  usuariosDenunciados.add(u);
+    	  }
+      }
+      model.addAttribute("usuarios", usuariosDenunciados);
       return "bannearUsuarios";
 }
 
@@ -745,6 +756,216 @@ public String restablecerContraseña(@RequestParam("clave") String clave){
 	
 	
 	}
+	
+	//Estadisticas
+	@GetMapping("/administradores/estadistica")
+	public String estadistica(Model model,Model model2,Model model3){
+		List<Usuario> usuarios=this.serviceUsuario.obtenerTodosUsuarios();
+		List<Producto> productos=this.serviceProducto.obtenerTodosProductos();
+		List<Categoria> categorias=this.serviceCategoria.obtenerTodasCategoria();
+		
+		
+		List<EstadisticaGeneral> estadisticaGeneral = new ArrayList<EstadisticaGeneral>();
+		List<Estadistica> productosXestado = new ArrayList<Estadistica>();
+		List<Estadistica2> productosXcategoria = new ArrayList<Estadistica2>();
+		
+		EstadisticaGeneral e1=new EstadisticaGeneral();
+		EstadisticaGeneral e2=new EstadisticaGeneral();
+		EstadisticaGeneral e3=new EstadisticaGeneral();
+		e1.setTotalUsuariosN("Usuarios");
+		e1.setCantidadesTotal(usuarios.size());
+		e2.setTotalUsuariosN("Productos");
+		e2.setCantidadesTotal(productos.size());
+		e3.setTotalUsuariosN("Categorias");
+		e3.setCantidadesTotal(categorias.size());
+		
+		estadisticaGeneral.add(e1);
+		estadisticaGeneral.add(e2);
+		estadisticaGeneral.add(e3);
+		
+		
+		
+		
+		
+		
+		int[] contadores = new int[categorias.size()];
+		int estado=0;
+		int estado2=0;
+		int estado3=0;
+		int contadorActual=0;
+		int aux=0;
+		
+		
+		
+		for(Producto p:productos) {
+			if(p.getIdEstadoProducto()==1) {
+				estado+=1;
+			}else if(p.getIdEstadoProducto()==2) {
+				estado2+=1;
+			}else if(p.getIdEstadoProducto()==3) {
+				estado3+=1;
+			}
+		}
+		
+		Estadistica PxE1=new Estadistica();
+		Estadistica PxE2=new Estadistica();
+		Estadistica PxE3=new Estadistica();
+		PxE1.setDescripcion("Nuevo");
+		PxE1.setCantidadEstado(estado);
+		PxE2.setDescripcion("Semi Nuevo");
+		PxE2.setCantidadEstado(estado2);
+		PxE3.setDescripcion("Usuado");
+		PxE3.setCantidadEstado(estado3);
+		
+		productosXestado.add(PxE1);
+		productosXestado.add(PxE2);
+		productosXestado.add(PxE3);
+		
+		
+		
+		
+		for(Categoria c:categorias) {
+			
+			for(Producto p:productos) {
+				
+				if(c.getIdCategoria()== p.getIdCategoria()) {
+				 aux+=1;
+				}
+				
+			}
+			contadores[contadorActual]=aux;
+			aux=0;
+			contadorActual+=1;
+		}
+		int i =0;
+			for(Categoria c:categorias) {
+				
+				Estadistica2 PxC=new Estadistica2();
+				PxC.setCategoria(c.getNombre());
+				PxC.setCantidadCategoria(contadores[i]);
+				productosXcategoria.add(PxC);
+				i+=1;
+				}
+
+		
+		model.addAttribute("estadisticaGeneral", estadisticaGeneral);
+		model.addAttribute("productosXestado", productosXestado);
+		model.addAttribute("productosXcategoria", productosXcategoria);
+		
+		
+		
+		
+		
+		
+	    return "estadisticas.html";
+	    
+	}
+	
+	public String denuncias = "";
+	 
+	 @PostMapping(value ="/usuarios/agregarDenuncia")
+	  public String agregarDenuncia(@RequestParam(name = "denuncia") String denuncia, 
+			  @RequestParam(name = "idUsuario") int idUsuario) {
+		 
+		 try {
+	      List<Usuario> usuario=this.serviceUsuario.obtenerTodosUsuarios();
+	        for (Usuario u: usuario) {
+	            if(u.getIdUsuario() == idUsuario) {
+	            	if(u.getDenuncia() == null) {
+	            		 u.setDenuncia(String.valueOf(denuncia));
+	            	} else {
+	            		denuncias = u.getDenuncia() + ',' + denuncia;
+	            		 u.setDenuncia(String.valueOf(denuncias));
+	            	}
+	            	this.serviceUsuario.crear(u);
+	           
+	            }
+	        }
+	      return "redirect:/pagina/paginaPrincipal";
+		 } catch(Exception e) {
+			 return "/";
+		 }
+
+	  }
+	  
+	 
+	 @GetMapping("/prueba")
+	 public String denuncia(){
+	     return "denuncia";
+	 }
+	 
+	 @GetMapping("/producto")
+	 public String producto(){
+		 return "producto";
+	 }
+	 
+	 @GetMapping("/vendedor")
+	 public String vendedor(){
+		 return "vendedor";
+	 }
+	 
+	 @GetMapping("/detalle/{id}")
+	    public String detalleProducto(Model model, @PathVariable("id") int id) {
+	        try {
+	            Producto producto = this.serviceProducto.buscarProducto(id);
+	            model.addAttribute("producto",producto);
+	            return "/producto";
+	        } catch (Exception e) {
+	            model.addAttribute("error", e.getMessage());
+	            return "error";
+	        }
+	    }
+	 
+	 @GetMapping("/denuncia/{id}")
+	    public String denunciarUsuario(Model model, @PathVariable("id") int id) {
+	        try {
+	        	Usuario usuario = this.serviceUsuario.buscarUsuario(id);
+	            model.addAttribute("usuario",usuario);
+	            return "denuncia";
+	        } catch (Exception e) {
+	            model.addAttribute("error", e.getMessage());
+	            return "error";
+	        }
+	    }
+	 
+	 
+	 /*---------------------------------------Calificacion de Vendedores------------------------------------------*/
+	 
+	 
+	 
+	 @RequestMapping(value="/calificar", method=RequestMethod.POST)
+		public String calificarVendedores(@RequestParam(name = "calificar") int calificacion,
+				@RequestParam(name="idUsuario") int idUsuario){
+		 try {
+		      List<Usuario> usuario=this.serviceUsuario.obtenerTodosUsuarios();
+		      Usuario u1 = new Usuario();
+		        for (Usuario u: usuario) {
+		            if(u.getIdUsuario() == idUsuario) {
+		            	if(u.getCalificacion() == 0) {
+		            		 u.setCalificacion(calificacion);
+		            		 this.serviceUsuario.crear(u);
+		            	} else {
+		            		u.setCalificacion((u.getCalificacion() + calificacion)/(2));
+		            		this.serviceUsuario.crear(u);
+		            	}
+		            	
+		           
+		            }
+		            
+		        }
+		        
+		        
+		      return "redirect:/pagina/paginaPrincipal";
+			 } catch(Exception e) {
+				 return "/";
+			 }
+		}
+	 
+	 @GetMapping(value="/error")
+		public String error(){
+			return "error.html";
+			
+		}
 
 }
 
