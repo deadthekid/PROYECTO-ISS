@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,6 +15,9 @@ import java.util.List;
 import java.util.Random;
 
 import javax.mail.MessagingException;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -311,7 +315,6 @@ public class Controlador {
                                   @RequestParam(name = "nombre") String nombre,
                                   @RequestParam(name = "precio") int precio, 
                                   @RequestParam(name = "descripcion") String descripcion,
-                                  @RequestParam(name = "fechaIngreso") @DateTimeFormat(iso = ISO.DATE) LocalDate fechaIngreso ,
                                   @RequestParam(name = "file") MultipartFile fotografias,
                                   @RequestParam(name = "idCategoria") int idCategoria,
                                   @RequestParam(name = "idEstadoProducto") int idEstadoProducto){
@@ -343,6 +346,7 @@ public class Controlador {
     			}
     			
     		}
+    		LocalDate fechaIngreso = LocalDate.now();
             Producto producto= new Producto(nombre,precio,descripcion,fechaIngreso,fotografias.getOriginalFilename(),idCategoria,idUsuario,idEstadoProducto);
             this.serviceProducto.crearProducto(producto);
             return "redirect:/pagina/paginaPrincipal";
@@ -469,9 +473,9 @@ public class Controlador {
   
   @GetMapping("/pagina/paginaPrincipal")
   public String clientesPrincipal(@RequestParam (name="page",defaultValue="0")int page, Model model){
-	  Pageable userPageable = PageRequest.of(page, 3);
+	  Pageable userPageable = PageRequest.of(page, 12);
 	  Page<Producto> producto= this.serviceProducto.obtenerTodosProductos(userPageable);
-	  RenderizadorPaginas<Producto> renderizadorPaginas = new RenderizadorPaginas<Producto>("autenticacion",producto);
+	  RenderizadorPaginas<Producto> renderizadorPaginas = new RenderizadorPaginas<Producto>("/pagina/paginaPrincipal",producto);
       model.addAttribute("page", renderizadorPaginas);
       model.addAttribute("producto", producto);
       return "autenticacion";

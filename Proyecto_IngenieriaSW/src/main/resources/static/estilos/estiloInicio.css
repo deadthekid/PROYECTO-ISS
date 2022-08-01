@@ -18,9 +18,17 @@ header {
 .page-link:hover{
     color:black;
 }
-.page-link:focus{
-    color: black;
-    background-color:  rgba(255, 195, 0, 1);
+.pagina:focus{
+    color: black!important;
+    background-color:  rgba(255, 195, 0, 1)!important;
+    outline-width: 0;
+}
+
+span:focus{
+	border-color:  rgba(255, 195, 0, 1)!important;;
+}
+.page-link2:active{
+	background-color:  rgba(255, 195, 0, 1)!important;
 }
 
 .correcion-borde:focus{
@@ -106,3 +114,4 @@ header {
 #calificar:focus{
     outline-width: 0;
 }
+
