@@ -214,9 +214,12 @@ public class Controlador {
 		return "index";
 	}
 	@GetMapping("/")
-	public String registrarCompani(Model model){
-		List<Producto> producto = this.serviceProducto.obtenerTodosProductos();
-        model.addAttribute("producto", producto);
+	public String registrarCompani(@RequestParam (name="page",defaultValue="0")int page,Model model){
+		Pageable userPageable = PageRequest.of(page, 12);
+		  Page<Producto> producto= this.serviceProducto.obtenerTodosProductos(userPageable);
+		  RenderizadorPaginas<Producto> renderizadorPaginas = new RenderizadorPaginas<Producto>("/pagina/paginaPrincipal",producto);
+	      model.addAttribute("page", renderizadorPaginas);
+	      model.addAttribute("producto", producto);
 		return "inicio";
 	}
 	
@@ -473,7 +476,7 @@ public class Controlador {
   
   @GetMapping("/pagina/paginaPrincipal")
   public String clientesPrincipal(@RequestParam (name="page",defaultValue="0")int page, Model model){
-	  Pageable userPageable = PageRequest.of(page, 12);
+	  Pageable userPageable = PageRequest.of(page, 6);
 	  Page<Producto> producto= this.serviceProducto.obtenerTodosProductos(userPageable);
 	  RenderizadorPaginas<Producto> renderizadorPaginas = new RenderizadorPaginas<Producto>("/pagina/paginaPrincipal",producto);
       model.addAttribute("page", renderizadorPaginas);
