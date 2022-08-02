@@ -215,9 +215,9 @@ public class Controlador {
 	}
 	@GetMapping("/")
 	public String registrarCompani(@RequestParam (name="page",defaultValue="0")int page,Model model){
-		Pageable userPageable = PageRequest.of(page, 12);
+		Pageable userPageable = PageRequest.of(page, 6);
 		  Page<Producto> producto= this.serviceProducto.obtenerTodosProductos(userPageable);
-		  RenderizadorPaginas<Producto> renderizadorPaginas = new RenderizadorPaginas<Producto>("/pagina/paginaPrincipal",producto);
+		  RenderizadorPaginas<Producto> renderizadorPaginas = new RenderizadorPaginas<Producto>("/",producto);
 	      model.addAttribute("page", renderizadorPaginas);
 	      model.addAttribute("producto", producto);
 		return "inicio";
@@ -971,9 +971,39 @@ public String restablecerContraseña(@RequestParam("clave") String clave){
 	 @GetMapping(value="/error")
 		public String error(){
 			return "error.html";
-			
 		}
+	 
+	 //ELIMINAR CUALQUIER ANUNCIO POR USUARIO 
+	 @GetMapping(value="/productos/tusProductos")
+		public String productosUsuario(Model model,Authentication auth){
+		 List<Producto> productos=this.serviceProducto.obtenerTodosProductos();
+		 List<Producto> productosXUsuario = new ArrayList<Producto>();
+	      String userName =auth.getName();
+	      List<Usuario> lista = this.serviceUsuario.obtenerTodosUsuarios();
+  			for (Usuario e: lista) {
+  				if(e.getCorreoElectronico().equals(userName)) {
+  					for(Producto p:productos) {
+  						if(p.getIdUsuario()==e.getIdUsuario()) {
+  							productosXUsuario.add(p);
+  						}
+  					}
+  				}
+  		}
+  			
+	      
+	      
+  		model.addAttribute("producto",productosXUsuario);
+		 return "productosUsuario.html";
+	}
+	 
+	 @PostMapping(value ="/productos/eliminarProducto")
+	    public String borrarProductos(@RequestParam(name = "idProducto") int idProducto) {
+		 List<Producto> productos=this.serviceProducto.obtenerTodosProductos();
+		 this.serviceProducto.eliminarProducto(idProducto);
+		
+	         return "redirect:/productos/tusProductos";
 
+	 }
 }
 
 

@@ -69,8 +69,11 @@
                     <li class="nav-item" style="margin-right: 10px;">
                         <button class="btn btn-light" type="submit" style="margin-top: 10px;"><a href="/productos/crearProductos" id="enlace" style="margin-left:0; text-decoration: none; ">Vender</a></button>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" style="margin-right: 10px;">
                         <button class="btn btn-light" type="submit" style="margin-top: 10px;"><a href="/categorias/seleccionarCategorias" id="enlace" style="margin-left:0; text-decoration: none;">Inscribirse a Categorias</a></button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="btn btn-light" type="submit" style="margin-top: 10px;"><a href="/productos/tusProductos" id="enlace" style="margin-left:0; text-decoration: none;">Eliminar Anuncios</a></button>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="index" id="enlace"><img src="/images/usuario.svg"  alt="" width="60" height="30">Bienvenido, <span sec:authentication="name">Username</span></a>
@@ -85,7 +88,7 @@
         <a href="/busqueda" id="enlace">Recientes</a>
 
         <div class="container">
-            <div class="row">
+            <div class="row" style="justify-content: center;">
                 <div class="col-12 col-sm-4 col-md-3 col-xl-3 col-lg-3	 mt-4 ml-4"  th:each="tmpProducto:${producto}">
                      <a id="enlace" th:href="@{/detalle/{id}(id=${tmpProducto.idProducto})}">
                         <div class="card">
