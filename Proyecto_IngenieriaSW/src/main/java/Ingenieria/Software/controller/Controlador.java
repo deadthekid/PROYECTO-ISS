@@ -49,6 +49,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import Ingenieria.Software.model.Anuncio;
 import Ingenieria.Software.model.Categoria;
+import Ingenieria.Software.model.Chat;
 import Ingenieria.Software.model.Departamento;
 import Ingenieria.Software.model.Estadistica;
 import Ingenieria.Software.model.Estadistica2;
@@ -56,12 +57,16 @@ import Ingenieria.Software.model.EstadisticaGeneral;
 import Ingenieria.Software.model.EstadoProducto;
 import Ingenieria.Software.model.Producto;
 import Ingenieria.Software.model.Usuario;
+import Ingenieria.Software.model.idAux;
+import Ingenieria.Software.model.msgEmisor;
+import Ingenieria.Software.model.msgReceptor;
 import Ingenieria.Software.repository.RepositoryAnuncio;
 import Ingenieria.Software.repository.RepositoryProducto;
 import Ingenieria.Software.service.EmailSenderService;
 import Ingenieria.Software.service.MailService;
 import Ingenieria.Software.service.ServiceAnuncio;
 import Ingenieria.Software.service.ServiceCategoria;
+import Ingenieria.Software.service.ServiceChat;
 import Ingenieria.Software.service.ServiceDepartamento;
 import Ingenieria.Software.service.ServiceEstadoProducto;
 import Ingenieria.Software.service.ServiceProducto;
@@ -97,6 +102,9 @@ public class Controlador {
 	
 	@Autowired
 	ServiceEstadoProducto serviceEstadoProducto;
+	
+	@Autowired
+	ServiceChat serviceChat;
 	
 	RepositoryProducto repositoryProducto;
 	
@@ -998,12 +1006,181 @@ public String restablecerContraseña(@RequestParam("clave") String clave){
 	 
 	 @PostMapping(value ="/productos/eliminarProducto")
 	    public String borrarProductos(@RequestParam(name = "idProducto") int idProducto) {
-		 List<Producto> productos=this.serviceProducto.obtenerTodosProductos();
 		 this.serviceProducto.eliminarProducto(idProducto);
 		
 	         return "redirect:/productos/tusProductos";
 
 	 }
+	 
+	 @GetMapping(value="/usuarios/chat")
+		public String ChatPrincipal(Model model,Model model2){
+		 List<Usuario> usuarios=this.serviceUsuario.obtenerTodosUsuarios();
+		 List<idAux> idReceptorM = new ArrayList<idAux>();
+		 idAux idReceptor = new idAux();
+		 idReceptor.setIdReceptor(0);
+		 idReceptorM.add(idReceptor);
+		 model.addAttribute("usuarios",usuarios);
+		 model2.addAttribute("idReceptorM",idReceptorM);
+		return "chat.html";	
+	}
+	 
+	 
+	 @GetMapping("/chat/{id}")
+	    public String detallesMensajes(Model model,Model model2,Model model3,Model model4, @PathVariable("id") int id,Authentication auth) {
+		 	List<Usuario> usuarios=this.serviceUsuario.obtenerTodosUsuarios();
+		 	List<Chat> chats=this.serviceChat.obtenerTodosLosChats();
+		 	List<msgEmisor> msgsEmisor = new ArrayList<msgEmisor>();
+			msgEmisor msgE = new msgEmisor();
+			List<msgReceptor> msgsReceptor = new ArrayList<msgReceptor>();
+			msgReceptor msgR = new msgReceptor();
+			
+		 	List<idAux> idReceptorM = new ArrayList<idAux>();
+		 	idAux idReceptor = new idAux();
+		 	String userName =auth.getName();
+		 	int idEmisor=0;
+		 	Chat chatAux = new Chat();
+		 	idReceptor.setIdReceptor(id);
+ 			idReceptorM.add(idReceptor);
+		 	for(Usuario u:usuarios) {
+		 		if(u.getCorreoElectronico().equals(userName)) {
+		 			idEmisor=u.getIdUsuario();
+		 		}
+		 	}
+		 	
+	        for(Chat cht:chats) {
+	        	if(cht.getIdUsuarioEmisor()==idEmisor&&cht.getIdUsuarioReceptor()==id) {
+	        		
+	        	}else {
+	        		chatAux.setIdUsuarioEmisor(idEmisor);
+	        		chatAux.setIdUsuarioReceptor(id);
+	        	}
+	        }
+	        for(Chat cht:chats) {
+	        	if(cht.getIdUsuarioEmisor()==idEmisor&&cht.getIdUsuarioReceptor()==id||cht.getIdUsuarioEmisor()==id&&cht.getIdUsuarioReceptor()==idEmisor) {
+	     	        	if(!cht.getMensajeEmisor().equals("%")){
+	     	        		String empty_str = "";
+	     	        		empty_str = cht.getMensajeEmisor();
+	     	                String[] split = empty_str.split(",");
+	     	                for (int i=0; i<split.length; i++) {
+	     	                	msgEmisor msgaux = new msgEmisor();
+	     	                	msgaux.setMsg(split[i]);
+	     	                	msgsEmisor.add(msgaux);
+	     	                }
+	     	        	}else {
+	     	        		
+	     	        	}
+	     	        	if(!cht.getMensajeReceptor().equals("%")){
+	     	        		String empty_str = "";
+	     	        		empty_str = cht.getMensajeReceptor();
+	     	                String[] split = empty_str.split(",");
+	     	                for (int i=0; i<split.length; i++) {
+	     	                	msgReceptor mdgaux = new msgReceptor();
+	     	                	mdgaux.setMsg(split[i]);
+	     	                	msgsReceptor.add(mdgaux);
+	     	                }
+	     	        	}else {
+	     	        		
+	     	        	}
+	     	        	
+	     	        }
+	        	
+	        }
+	       int aux45=0;
+	        for(Chat cht:chats) {
+	        	if(cht.getIdUsuarioEmisor()==idEmisor&&cht.getIdUsuarioReceptor()==id||cht.getIdUsuarioEmisor()==id&&cht.getIdUsuarioReceptor()==idEmisor) {
+	        		aux45=1;
+	        	}
+	        }
+	        
+	        if(aux45==0) {
+	        	Chat chatCrear = new Chat();
+	        	chatCrear.setIdUsuarioEmisor(idEmisor);
+	        	chatCrear.setIdUsuarioReceptor(id);
+	        	chatCrear.setMensajeEmisor("%");
+	        	chatCrear.setMensajeReceptor("%");
+	        	this.serviceChat.crearChat(chatCrear);
+	        }
+	        
+	        if(msgsReceptor.size()<msgsEmisor.size()) {
+	        	msgReceptor mdgaux = new msgReceptor();
+            	mdgaux.setMsg("");
+            	msgsReceptor.add(mdgaux);
+	        }else {
+	        	if(msgsEmisor.size()<msgsReceptor.size()) {
+		        	msgEmisor msgaux = new msgEmisor();
+                	msgaux.setMsg("");
+                	msgsEmisor.add(msgaux);
+		        }
+	        }
+	        
+	        
+	        
+	        model2.addAttribute("usuarios",usuarios);
+	        model.addAttribute("idReceptorM",idReceptorM);
+	        model3.addAttribute("receptorMsg",msgsReceptor);
+	        model4.addAttribute("emisorMsg",msgsEmisor);
+	        for(Chat cht: chats) {
+	        	if(cht.getIdUsuarioEmisor()==idEmisor&&cht.getIdUsuarioReceptor()==id) {
+	        		return "chat2.html";
+	        	}
+	        }
+	        return "chat.html";
+	   }
+	 
+	 @PostMapping(value ="/chat/mensajes")
+	    public String renderizarMensajes(Model model,Model model2,Authentication auth ,
+	    			 					 @RequestParam(name = "idReceptor") int idReceptor,
+	    								 @RequestParam(name = "msg") String msg) {
+		 List<Usuario> usuarios=this.serviceUsuario.obtenerTodosUsuarios();
+		 List<Chat> chats=this.serviceChat.obtenerTodosLosChats();
+		 List<msgEmisor> msgsEmisor = new ArrayList<msgEmisor>();
+		 msgEmisor msgE = new msgEmisor();
+		 List<msgReceptor> msgsReceptor = new ArrayList<msgReceptor>();
+		 String userName =auth.getName();
+		 	int idEmisor=0;
+		 	for(Usuario u:usuarios) {
+		 		if(u.getCorreoElectronico().equals(userName)) {
+		 			idEmisor=u.getIdUsuario();
+		 		}
+		 	}
+		 	
+	        for(Chat cht:chats) {
+	        	if(cht.getIdUsuarioEmisor()==idEmisor&&cht.getIdUsuarioReceptor()==idReceptor) {
+	        			if(cht.getMensajeReceptor().equals("%")) {
+	        				cht.setMensajeReceptor(msg+",");
+		        			this.serviceChat.crearChat(cht);
+	        			}else {
+	        				String aux=cht.getMensajeReceptor();
+	        				cht.setMensajeReceptor(aux+msg+",");
+		        			this.serviceChat.crearChat(cht);
+	        			}
+	        			
+	        		
+	        	}else {
+	        		if(cht.getIdUsuarioEmisor()==idReceptor&&cht.getIdUsuarioReceptor()==idEmisor) {
+	        			if(cht.getMensajeEmisor().equals("%")) {
+	        				cht.setMensajeEmisor(msg+",");
+		        			this.serviceChat.crearChat(cht);
+	        			}else {
+	        				String aux=cht.getMensajeEmisor();
+	        				cht.setMensajeEmisor(aux+msg+",");
+		        			this.serviceChat.crearChat(cht);
+	        			}     			
+	        			
+	        			msgE.setMsg(msg);
+	        			msgsEmisor.add(msgE);
+	        		}
+        			
+        		}
+	        }
+	        
+		
+	         return "redirect:/chat/"+idReceptor;
+
+	 }
+	 
+	 
+	 ///chat/3
 }
 
 
