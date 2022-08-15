@@ -10,7 +10,7 @@
     <script src="https://kit.fontawesome.com/e6ebadea27.js" crossorigin="anonymous"></script>
     <title>Barra de Usuario</title>
 </head>
-<body>
+<body onload="estado()">
 
     <header>
         <nav class="navbar navbar-expand-lg">
@@ -18,75 +18,10 @@
                 <a class="navbar-brand" href="inicio.html">
                     <img src="/images/logo-group.svg" alt="" width="100" height="74">
                 </a>
-                <select class="form-select btn-secondary bg-light text-secondary ml-5 mr-5" id="idDepartamento" name="idDepartamento" style="width:100px; border-width: 0px; border-radius: 5px;" required>
-
-                    <option value=" "  selected disabled hidden>Ubicación</option>
-                    <option value="1">Yoro</option>
-                    <option value="2">Choluteca</option>
-                    <option value="3">Colón</option>
-                    <option value="4">Comayagua</option>
-                    <option value="5">Copán</option>
-                    <option value="6">Cortés</option>
-                    <option value="7">El Paraíso</option>
-                    <option value="8">Francisco Morazán</option>
-                    <option value="9">Gracias a Dios</option>
-                    <option value="10">Intibucá</option>
-                    <option value="11">Islas de la Bahía</option>
-                    <option value="12">La Paz</option>
-                    <option value="13">Lempira</option>
-                    <option value="14">Ocotepeque</option>
-                    <option value="15">Olancho</option>
-                    <option value="16">Santa Bárbara</option>
-                    <option value="17">Valle</option>
-                    <option value="18">Atlántida</option>
-                    
-                    
-                </select>
-                <form class="d-flex ml-xl-5" role="search">
-                    <input class="form-control me-2 w-100" type="search" placeholder="" aria-label="Search">
-                    <select class="form-select btn-secondary bg-light text-secondary w-50" id="categoria" name="categoria" style="border-width: 0px; border-radius:5px;" required>
-
-                        <option value=" "  selected disabled hidden>Categoría</option>
-                        <option value="electrónica">Electrónica</option>
-                        <option value="futuros padres">Futuros padres</option>
-                        <option value="hogar">Hogar</option>
-                        <option value="inmuebles">Inmuebles</option>
-                        <option value="juguetes">Juguetes</option>
-                        <option value="libros">Libros</option>
-                        <option value="mascotas">Mascotas</option>
-                        <option value="moda">Moda</option>
-                        <option value="vehículos">Vehículos</option>
-                        <option value="video juegos">Videojuegos</option>
-                        
-                    </select>
-                    <button class="btn btn-light" type="submit"><img src="/images/lupa.png" alt=""></button>
-                </form>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent" style="align-items:flex-end">
-                    <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
-                    <li class="nav-item" style="margin-right: 10px;">
-                        <button class="btn btn-light" type="submit" style="margin-top: 10px;"><a href="/productos/crearProductos" id="enlace" style="margin-left:0; text-decoration: none; ">Vender</a></button>
-                    </li>
-                    <li class="nav-item" style="margin-right: 10px;">
-                        <button class="btn btn-light" type="submit" style="margin-top: 10px;"><a href="/categorias/seleccionarCategorias" id="enlace" style="margin-left:0; text-decoration: none;">Inscribirse a Categorias</a></button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="btn btn-light" type="submit" style="margin-top: 10px;"><a href="/productos/tusProductos" id="enlace" style="margin-left:0; text-decoration: none;">Eliminar Anuncios</a></button>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="index" id="enlace"><img src="/images/usuario.svg"  alt="" width="60" height="30">Bienvenido, <span sec:authentication="name">Username</span></a>
-                    </li>
-                    
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
- <div  style="display:flex;margin-left:300px;">
+                <div  style="margin-left:auto; margin-right: auto; ">
         <form th:action="@{/productos/ProductosFiltradoCategorias}" method="post">
-        <div style="width:200px;" class="form-group text-secondary">
+        <div style="display:flex; margin-top: 10px;">
+        <div  class="form-group text-secondary">
     
                   <select class="form-select form-control btn-secondary bg-light text-secondary " id="idCategoria" name="idCategoria"  required >
 					
@@ -96,7 +31,7 @@
                  </select>
        </div>
        
-       <div style="width:200px;margin-left:15px;margin-right:15px" class="form-group text-secondary">
+       <div style="margin-left:15px;" class="form-group text-secondary">
                   <select class="form-select form-control btn-secondary bg-light text-secondary " id="nombre" name="nombre"  required >
 					
                      <option value=" "  selected disabled hidden >Ubicacion</option>
@@ -104,11 +39,11 @@
                         </select>
             </div>  
             
-            <div style="width:200px;margin-left:15px;margin-right:15px" class="form-group text-secondary">
+            <div style="" class="form-group text-secondary">
                  <div class="form-group">    
                 <div class="row" style="    width: 365px;margin-left: -10px;">
                     <div class="col-12">
-                        <input type="number" class="form-control btn-secondary bg-light text-secondary" id="valor" name="valor" placeholder="Descripcion" required="required">
+                        <input type="number" class="form-control btn-secondary bg-light text-secondary" id="valor" name="valor" placeholder="Precio maximo" >
                     </div>
                     
                 </div>
@@ -117,14 +52,24 @@
             </div>  
             
             
-             <div style="margin-left:15px;" class="form-group">
-             
-                <button type="submit" class="btn bg-warning btn-lg btn-block" style="background-color:#E9B200">Buscar</button>
-              </div>
-        </form>
+             <div style="margin-left: 5px; height: 40px!important; display: flex; justify-content: center; align-items: center;" class="form-group">
+                <button type="submit" class="btn bg-warning btn-lg btn-block" style="background-color:  #9C795A!important; border: 1px solid black; height: 100%; text-align: center; display: flex; justify-content: center; align-items: center; color:white;">Buscar</button>
              </div>
+             <a class="navbar-brand" href="inicio.html">
+                    <img style="visibility: hidden;" src="/images/logo-group.svg" alt="" width="100" height="74">
+                </a>
+        </div>
+        </form>
+      </div>
+                
+                
+                
+            </div>
+        </nav>
+    </header>
+ 	<a class="ml-xl-5 mt-xl-5" href="/pagina/paginaPrincipal"><img src="/images/regresar.png"
+            style="width: 47px; height:47px; margin-top: 30px !important; margin-right: 35px; float: right;" alt=""></a>
     <div style="margin-top: 50px;">
-        <a href="/busqueda" id="enlace">Recientes</a>
 
         <div class="container">
             <div class="row" style="justify-content: center;">
@@ -134,7 +79,7 @@
                             <img th:src= "@{'/imgt/' + ${tmpProducto.fotografias}}" class="card-img-top" alt="..." width="150px" height="150px">
                             <div class="card-body" style="padding-bottom: 1px;">
                                 <h5 class="card-title" th:text="${tmpProducto.nombre}"><span>Vendedor<span></h5>
-                                <p class="card-text" th:text="'LPS. '+${tmpProducto.precio}"></p>
+                                <p class="card-text" name="moneda" th:text="${tmpProducto.precio}"></p>
                                 <p class="card-text" th:text="'Fecha: '+${tmpProducto.idDepartamento}"></p>
                                
                             </div>
@@ -146,7 +91,21 @@
         </div>
 
     </div>
-    
+    <script type="text/javascript">
+		function estado() {
+			console.log("entro")
+                    var estado = document.getElementsByName("moneda");
+                    console.log(estado)
+					estado.forEach(function(e){
+						if (e.innerHTML !== null) {
+						console.log("entro")
+                        aux = "HNL"+" "+e.innerHTML + ".00"
+                     	e.innerHTML = aux;
+                    	}	
+					})
+                    
+                }
+	</script>
 	
   
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

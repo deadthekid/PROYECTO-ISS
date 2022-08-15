@@ -13,7 +13,6 @@ import Ingenieria.Software.service.EmailSenderService;
 @SpringBootApplication
 public class ProyectoIngenieriaSwApplication {
 	
-	
 	public static void main(String[] args) {
 		SpringApplication.run(ProyectoIngenieriaSwApplication.class, args);
 	}

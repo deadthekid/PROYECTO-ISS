@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -491,8 +492,9 @@ public class Controlador {
   @GetMapping("/pagina/paginaPrincipal")
   public String clientesPrincipal(@RequestParam (name="page",defaultValue="0")int page, Model model){
 	  Pageable userPageable = PageRequest.of(page, 6);
-	  Page<Producto> producto= this.serviceProducto.obtenerTodosProductos(userPageable);
+	  Page<Producto> producto= this.serviceProducto.obtenerTodosProductos(userPageable) ;
 	  RenderizadorPaginas<Producto> renderizadorPaginas = new RenderizadorPaginas<Producto>("/pagina/paginaPrincipal",producto);
+	  
       model.addAttribute("page", renderizadorPaginas);
       model.addAttribute("producto", producto);
       return "autenticacion";
